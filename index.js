@@ -14,12 +14,13 @@ class Cible {
         this.width = xStep;   //La largeur de la cible correspond à la largeur de la cellule
         this.height = yStep;
     }
+    touchedProjectile(projectile){
+        return (this.x == (projectile.xCenter-0.5*this.width)) &&
+        (((projectile.yCenter-projectile.radius)-this.y)< this.height)
+    }
+    touchedCanon(){
+        return this.y > 370;
 
-    touched(projectile){
-        // return !((otherRectangle.topLeftYPos > (this.topLeftYPos+this.length))||
-        // ((otherRectangle.topLeftYPos + otherRectangle.length) < (this.topLeftYPos)) ||
-        // (otherRectangle.topLeftXPos > (this.topLeftXPos+this.width))||
-        // ((otherRectangle.topLeftXPos + otherRectangle.width) < (this.topLeftXPos)))
     }
     draw(){
         ctx.fillStyle = "blue";
@@ -27,41 +28,80 @@ class Cible {
     }
 }
 
-class Projectile {
-    constructor(xPosCanon, xStep, yStep, maxHeight){
-        this.radius = Math.min(xStep,yStep)/2;
-        this.xCenter = xPosCanon + xStep/2;
-        this.yCenter = maxHeight - 1.5*yStep;
+class Canon {
+    constructor(xPosCanon){
+        this.xCenter = xPosCanon+50;
+        this.yCenter = 480;
+        this.radius = 50;
     }
     draw(){
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "green";
         ctx.beginPath();
-        ctx.arc(this.xCenter, this.yCenter, this.radius, 0, Math.PI*2);
+        ctx.arc(this.xCenter, this.yCenter, this.radius, Math.PI,0);
         ctx.fill();
         ctx.closePath();
     }
 }
 
-let cible = new Cible(100, 50, 900);
+class Projectile {
+    constructor(xPosCanon, xStep, yStep, maxHeight){
+        this.radius = Math.min(xStep,yStep)/4;
+        this.xCenter = xPosCanon + xStep/2;
+        this.yCenter = maxHeight - 0.5*yStep;
+        this.go = 1;
+    }
+    draw(){
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(this.xCenter, this.yCenter, this.radius, 0, Math.PI*2,false);
+        ctx.fill();
+        ctx.closePath();
+    }
+    border(){
+        return this.yCenter+this.radius < 0;
+    }
+    reset(xCenterCanon){
+        this.xCenter = xCenterCanon;
+        this.yCenter = 450;
+        this.go = 0;
+    }
+}
+
+let cible = new Cible(100, 60, 900);
 console.log(cible);
 
 let projectile = new Projectile(400,100,60,480);
 console.log(projectile);
+
+let canon = new Canon(400);
+console.log(canon);
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
 let loop = function() {
     cible.y += 1;
-
+    if(projectile.go == 1){
+        projectile.yCenter-=3;
+    }
+    console.log(projectile.yCenter);
     ctx.clearRect(0,0,900,480);
 
     cible.draw();
 
     projectile.draw();
     
-    if (cible.y>360){
+    // canon.draw();
+    
+    if (cible.touchedCanon()){
+        return;
+    }
+    if (cible.touchedProjectile(projectile)){
         cible = new Cible(100,50,900);
+        projectile.reset(canon.xCenter);
+    }
+    if (projectile.border()){
+        projectile.reset(canon.xCenter);
     }
     
     requestAnimationFrame(loop);

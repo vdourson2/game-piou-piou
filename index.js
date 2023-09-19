@@ -26,40 +26,32 @@ class Cible {
 class Projectile {
     constructor(xPosCanon, xStep, yStep, maxHeight){
         this.radius = Math.min(xStep,yStep)/2;
-        this.xStart = xPosCanon + xStep/2 - this.radius;
-        this.yStart = maxHeight - 1.5*yStep;
+        this.xCenter = xPosCanon + xStep/2;
+        this.yCenter = maxHeight - 1.5*yStep;
     }
 }
 
 let cible = new Cible(100, 50, 900, 480);
 console.log(cible);
 
-let projectile = new Projectile(500,100,60,480);
+let projectile = new Projectile(400,100,60,480);
 console.log(projectile);
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-(function drawCible(cible){
-    // for (let el of arrayRectangles) {
+function drawCible(cible){
         ctx.fillStyle = "blue";
-        ctx.fillRect(cible.topLeftXPos,cible.topLeftYPos,cible.width,cible.height);
-        // ctx.font = "30px Arial";
-        // ctx.fillStyle = "black";
-        // ctx.textAlign = "center"; 
-        // ctx.fillText(`${el.index}`,(el.topLeftXPos + el.width/2),(el.topLeftYPos+(el.length+20)/2));
-    
-})();
+        ctx.fillRect(cible.topLeftXPos,cible.topLeftYPos,cible.width,cible.height);    
+};
 
 function drawProjectile(projectile){
     ctx.fillStyle = "red";
     ctx.beginPath();
-    ctx.arc(projectile.xStart)
+    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
 }
 
-
-// let testRandom = [];
-// for (let i=0;i<10;i++) {
-//     testRandom.push(randomN(50,5));
-// }
-// console.log(testRandom);
+drawCible(cible);
+drawProjectile(projectile);

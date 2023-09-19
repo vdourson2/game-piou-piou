@@ -8,10 +8,10 @@ function randomN(size, step){
 }
 // This class creat rectangles with topLeftXPos, topLeftYPos, width and length as parameters
 class Cible {
-    constructor(xStep, yStep, maxWidth, maxHeight){
-        this.topLeftXPos = randomN(maxWidth,xStep);
-        this.topLeftYPos = 0;
-        this.width = xStep;
+    constructor(xStep, yStep, maxWidth){
+        this.x = randomN(maxWidth,xStep); //Coordonnée en x du point supérieur gauche de la cible
+        this.y = 0; //Apparait toujours sur la ligne supérieure
+        this.width = xStep;   //La largeur de la cible correspond à la largeur de la cellule
         this.height = yStep;
     }
 
@@ -31,7 +31,20 @@ class Projectile {
     }
 }
 
-let cible = new Cible(100, 50, 900, 480);
+function drawCible(cible){
+    ctx.fillStyle = "blue";
+    ctx.fillRect(cible.x,cible.y,cible.width,cible.height);    
+};
+
+function drawProjectile(projectile){
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
+};
+
+let cible = new Cible(100, 50, 900);
 console.log(cible);
 
 let projectile = new Projectile(400,100,60,480);
@@ -40,10 +53,28 @@ console.log(projectile);
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-function drawCible(cible){
-        ctx.fillStyle = "blue";
-        ctx.fillRect(cible.topLeftXPos,cible.topLeftYPos,cible.width,cible.height);    
-};
+let loop = function() {
+    cible.y += 1;
+    console.log(cible.y);
+
+    ctx.clearRect(0,0,900,480);
+
+    ctx.fillStyle = "blue";
+    ctx.fillRect(cible.x,cible.y,cible.width,cible.height);  
+
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
+    ctx.fill();
+    ctx.closePath();
+    
+    if (cible.y>360){
+        cible = new Cible(100,50,900);
+    }
+    
+    window.requestAnimationFrame(loop);
+}
+window.requestAnimationFrame(loop);
 
 function drawProjectile(projectile){
     ctx.fillStyle = "red";

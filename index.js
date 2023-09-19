@@ -44,11 +44,11 @@ class Canon {
 }
 
 class Projectile {
-    constructor(xPosCanon, xStep, yStep, maxHeight){
+    constructor(xCenterCanon, xStep, yStep, maxHeight){
         this.radius = Math.min(xStep,yStep)/4;
-        this.xCenter = xPosCanon + xStep/2;
+        this.xCenter = xCenterCanon;
         this.yCenter = maxHeight - 0.5*yStep;
-        this.go = 1;
+        this.go = 0 ;
     }
     draw(){
         ctx.fillStyle = "red";
@@ -70,28 +70,47 @@ class Projectile {
 let cible = new Cible(100, 60, 900);
 console.log(cible);
 
-let projectile = new Projectile(400,100,60,480);
-console.log(projectile);
-
 let canon = new Canon(400);
 console.log(canon);
 
+let projectile = new Projectile(canon.xCenter,100,60,480);
+console.log(projectile);
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+
+document.body.addEventListener('keydown',  (event) => {
+    if (event.code === "Space") {
+        projectile.go = 1;
+    }
+    if (event.code === "ArrowLeft") {
+        canon.xCenter -= 100 ;
+        
+    }
+    if (event.code === "ArrowRight") {
+        canon.xCenter += 100 ; 
+    }
+})
 
 let loop = function() {
     cible.y += 1;
     if(projectile.go == 1){
         projectile.yCenter-=3;
     }
+
+    if(projectile.go == 0){
+        projectile.xCenter = canon.xCenter;
+    }
     console.log(projectile.yCenter);
     ctx.clearRect(0,0,900,480);
 
     cible.draw();
 
-    projectile.draw();
+    if (projectile.go == 1) {
+        projectile.draw();
+    }
     
-    // canon.draw();
+    canon.draw();
     
     if (cible.touchedCanon()){
         return;

@@ -21,6 +21,10 @@ class Cible {
         // (otherRectangle.topLeftXPos > (this.topLeftXPos+this.width))||
         // ((otherRectangle.topLeftXPos + otherRectangle.width) < (this.topLeftXPos)))
     }
+    draw(){
+        ctx.fillStyle = "blue";
+        ctx.fillRect(this.x,this.y,this.width,this.height); 
+    }
 }
 
 class Projectile {
@@ -29,20 +33,14 @@ class Projectile {
         this.xCenter = xPosCanon + xStep/2;
         this.yCenter = maxHeight - 1.5*yStep;
     }
+    draw(){
+        ctx.fillStyle = "red";
+        ctx.beginPath();
+        ctx.arc(this.xCenter, this.yCenter, this.radius, 0, Math.PI*2);
+        ctx.fill();
+        ctx.closePath();
+    }
 }
-
-function drawCible(cible){
-    ctx.fillStyle = "blue";
-    ctx.fillRect(cible.x,cible.y,cible.width,cible.height);    
-};
-
-function drawProjectile(projectile){
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
-    ctx.fill();
-    ctx.closePath();
-};
 
 let cible = new Cible(100, 50, 900);
 console.log(cible);
@@ -55,34 +53,17 @@ const ctx = canvas.getContext("2d");
 
 let loop = function() {
     cible.y += 1;
-    console.log(cible.y);
 
     ctx.clearRect(0,0,900,480);
 
-    ctx.fillStyle = "blue";
-    ctx.fillRect(cible.x,cible.y,cible.width,cible.height);  
+    cible.draw();
 
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
-    ctx.fill();
-    ctx.closePath();
+    projectile.draw();
     
     if (cible.y>360){
         cible = new Cible(100,50,900);
     }
     
-    window.requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 }
-window.requestAnimationFrame(loop);
-
-function drawProjectile(projectile){
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(projectile.xCenter, projectile.yCenter, projectile.radius, 0, Math.PI*2);
-    ctx.fill();
-    ctx.closePath();
-}
-
-drawCible(cible);
-drawProjectile(projectile);
+requestAnimationFrame(loop);

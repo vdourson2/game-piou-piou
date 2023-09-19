@@ -68,13 +68,8 @@ class Projectile {
 }
 
 let cible = new Cible(100, 60, 900);
-console.log(cible);
-
 let canon = new Canon(400);
-console.log(canon);
-
 let projectile = new Projectile(canon.xCenter,100,60,480);
-console.log(projectile);
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -83,46 +78,55 @@ document.body.addEventListener('keydown',  (event) => {
     if (event.code === "Space") {
         projectile.go = 1;
     }
-    if (event.code === "ArrowLeft") {
-        canon.xCenter -= 100 ;
-        
+    if ((event.code === "ArrowLeft") && (canon.xCenter > 100)) {
+        canon.xCenter -= 100 ;    
     }
-    if (event.code === "ArrowRight") {
+    if ((event.code === "ArrowRight") && (canon.xCenter < 800)){
         canon.xCenter += 100 ; 
     }
 })
 
+
+
 let loop = function() {
     cible.y += 1;
     if(projectile.go == 1){
-        projectile.yCenter-=3;
+        projectile.yCenter-= 10;
     }
 
     if(projectile.go == 0){
         projectile.xCenter = canon.xCenter;
     }
-    console.log(projectile.yCenter);
+    
     ctx.clearRect(0,0,900,480);
 
     cible.draw();
 
     if (projectile.go == 1) {
         projectile.draw();
-    }
+    } 
     
     canon.draw();
     
     if (cible.touchedCanon()){
         return;
     }
+
     if (cible.touchedProjectile(projectile)){
         cible = new Cible(100,50,900);
         projectile.reset(canon.xCenter);
     }
+
     if (projectile.border()){
         projectile.reset(canon.xCenter);
     }
     
     requestAnimationFrame(loop);
 }
+ 
+// ctx.font = "30px Arial";
+// ctx.fillStyle = "black";
+// ctx.textAlign = "center"; 
+// ctx.fillText("Start game",(el.topLeftXPos + el.width/2),(el.topLeftYPos+(el.length+20)/2));
+
 requestAnimationFrame(loop);

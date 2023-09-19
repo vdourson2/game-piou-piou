@@ -3,8 +3,29 @@ body {
     margin: 0;
 }
 
-canvas {
-    display: block;
-    border: solid 1px black;
-    margin: auto;
+h1 {
+    text-align: center;
+}
+
+.container {
+    position: relative;
+    canvas {
+        display: block;
+        border: solid 1px black;
+        margin: auto;
+    }
+    button{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
+}
+
+section {
+    width: 600px;
+    margin:50px auto;
+    h2 {
+        text-align: center;
+    }
 }

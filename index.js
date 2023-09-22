@@ -74,9 +74,17 @@ let projectile = new Projectile(canon.xCenter,100,60,480);
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
+let projectileN = 0;
+let projectiles = [];
+for (let i=0; i<3; i++) {
+    projectiles.push(new Projectile(canon.xCenter,100,60,480));
+}
+
 document.body.addEventListener('keydown',  (event) => {
     if (event.code === "Space") {
-        projectile.go = 1;
+        projectiles[projectileN].go = 1;
+        projectileN == 2 ? projectileN = 0 : projectileN++;
+        console.log(projectileN);
     }
     if ((event.code === "ArrowLeft") && (canon.xCenter > 100)) {
         canon.xCenter -= 100 ;    
@@ -86,40 +94,44 @@ document.body.addEventListener('keydown',  (event) => {
     }
 })
 
-
+console.log("test1");
 
 let loop = function() {
     cible.y += 1;
-    if(projectile.go == 1){
-        projectile.yCenter-= 10;
-    }
 
-    if(projectile.go == 0){
-        projectile.xCenter = canon.xCenter;
+    for (let projectile of projectiles) {
+        if(projectile.go == 1){
+            projectile.yCenter-= 10;
+        }
+
+        if(projectile.go == 0){
+            projectile.xCenter = canon.xCenter;
+        }
     }
     
     ctx.clearRect(0,0,900,480);
 
     cible.draw();
 
-    if (projectile.go == 1) {
-        projectile.draw();
-    } 
+    for (let projectile of projectiles) {
+        if (projectile.go == 1) {
+            projectile.draw();
+        } 
+        if (cible.touchedProjectile(projectile)){
+            cible = new Cible(100,50,900);
+            projectile.reset(canon.xCenter);
+        }
+        if (projectile.border()){
+            projectile.reset(canon.xCenter);
+        }
+    }
     
-    canon.draw();
     
     if (cible.touchedCanon()){
         return;
     }
-
-    if (cible.touchedProjectile(projectile)){
-        cible = new Cible(100,50,900);
-        projectile.reset(canon.xCenter);
-    }
-
-    if (projectile.border()){
-        projectile.reset(canon.xCenter);
-    }
+    
+    canon.draw();
     
     requestAnimationFrame(loop);
 }
@@ -128,5 +140,6 @@ let loop = function() {
 // ctx.fillStyle = "black";
 // ctx.textAlign = "center"; 
 // ctx.fillText("Start game",(el.topLeftXPos + el.width/2),(el.topLeftYPos+(el.length+20)/2));
+
 
 requestAnimationFrame(loop);

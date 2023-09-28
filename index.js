@@ -60,8 +60,7 @@ class Projectile {
     border(){
         return this.yCenter+this.radius < 0;
     }
-    reset(xCenterCanon){
-        this.xCenter = xCenterCanon;
+    reset(){
         this.yCenter = 450;
         this.go = 0;
     }
@@ -69,22 +68,20 @@ class Projectile {
 
 let cible = new Cible(100, 60, 900);
 let canon = new Canon(400);
-let projectile = new Projectile(canon.xCenter,100,60,480);
-
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext("2d");
-
 let projectileN = 0;
 let projectiles = [];
 for (let i=0; i<3; i++) {
     projectiles.push(new Projectile(canon.xCenter,100,60,480));
 }
 
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+
 document.body.addEventListener('keydown',  (event) => {
     if (event.code === "Space") {
         projectiles[projectileN].go = 1;
+        projectiles[projectileN].xCenter = canon.xCenter;
         projectileN == 2 ? projectileN = 0 : projectileN++;
-        console.log(projectileN);
     }
     if ((event.code === "ArrowLeft") && (canon.xCenter > 100)) {
         canon.xCenter -= 100 ;    
@@ -94,7 +91,6 @@ document.body.addEventListener('keydown',  (event) => {
     }
 })
 
-
 let loop = function() {
     
     ctx.clearRect(0,0,900,480);
@@ -103,17 +99,15 @@ let loop = function() {
    
     for (let projectile of projectiles) {
         if (projectile.go == 1) {
-            projectile.yCenter-= 10;
+            projectile.yCenter -= 10;
             projectile.draw();
-        } else {
-            projectile.xCenter = canon.xCenter;
-        }
+        } 
         if (cible.touchedProjectile(projectile)){
             cible = new Cible(100,50,900);
-            projectile.reset(canon.xCenter);
+            projectile.reset();
         }
         if (projectile.border()){
-            projectile.reset(canon.xCenter);
+            projectile.reset();
         }
     }
     

@@ -94,29 +94,20 @@ document.body.addEventListener('keydown',  (event) => {
     }
 })
 
-console.log("test1");
 
 let loop = function() {
-    cible.y += 1;
-
-    for (let projectile of projectiles) {
-        if(projectile.go == 1){
-            projectile.yCenter-= 10;
-        }
-
-        if(projectile.go == 0){
-            projectile.xCenter = canon.xCenter;
-        }
-    }
     
     ctx.clearRect(0,0,900,480);
-
-    cible.draw();
-
+    
+    cible.y += 1;
+   
     for (let projectile of projectiles) {
         if (projectile.go == 1) {
+            projectile.yCenter-= 10;
             projectile.draw();
-        } 
+        } else {
+            projectile.xCenter = canon.xCenter;
+        }
         if (cible.touchedProjectile(projectile)){
             cible = new Cible(100,50,900);
             projectile.reset(canon.xCenter);
@@ -126,20 +117,26 @@ let loop = function() {
         }
     }
     
-    
+    cible.draw();
+    canon.draw();
+
     if (cible.touchedCanon()){
         return;
     }
     
-    canon.draw();
-    
     requestAnimationFrame(loop);
 }
  
+
+let button = document.querySelector(".btn");
+button.addEventListener('click', (e) => {
+    requestAnimationFrame(loop)
+});
+
+// requestAnimationFrame(loop);
+
+
 // ctx.font = "30px Arial";
 // ctx.fillStyle = "black";
 // ctx.textAlign = "center"; 
 // ctx.fillText("Start game",(el.topLeftXPos + el.width/2),(el.topLeftYPos+(el.length+20)/2));
-
-
-requestAnimationFrame(loop);

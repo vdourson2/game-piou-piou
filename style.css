@@ -15,11 +15,12 @@ h1 {
   border: solid 1px black;
   margin: auto;
 }
-.container button {
+.container .btn {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: red;
 }
 
 section {

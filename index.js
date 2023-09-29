@@ -14,11 +14,11 @@ class Cible {
         this.width = xStep;   //La largeur de la cible correspond à la largeur de la cellule
         this.height = yStep;
     }
-    touchedProjectile(projectile){
+    touchedBy(projectile){
         return (this.x == (projectile.xCenter-0.5*this.width)) &&
         (((projectile.yCenter-projectile.radius)-this.y)< this.height)
     }
-    touchedCanon(){
+    touchCanon(){
         return this.y > 370;
 
     }
@@ -57,7 +57,7 @@ class Projectile {
         ctx.fill();
         ctx.closePath();
     }
-    border(){
+    reachBorder(){
         return this.yCenter+this.radius < 0;
     }
     reset(){
@@ -102,11 +102,11 @@ let loop = function() {
             projectile.yCenter -= 10;
             projectile.draw();
         } 
-        if (cible.touchedProjectile(projectile)){
+        if (cible.touchedBy(projectile)){
             cible = new Cible(100,50,900);
             projectile.reset();
         }
-        if (projectile.border()){
+        if (projectile.reachBorder()){
             projectile.reset();
         }
     }
@@ -114,7 +114,8 @@ let loop = function() {
     cible.draw();
     canon.draw();
 
-    if (cible.touchedCanon()){
+    if (cible.touchCanon()){
+        
         return;
     }
     
@@ -124,6 +125,7 @@ let loop = function() {
 
 let button = document.querySelector(".btn");
 button.addEventListener('click', (e) => {
+    cible = new Cible(100,50,900);
     requestAnimationFrame(loop)
 });
 

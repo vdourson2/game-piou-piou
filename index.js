@@ -76,6 +76,7 @@ for (let i=0; i<3; i++) {
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+let button = document.querySelector(".btn");
 
 document.body.addEventListener('keydown',  (event) => {
     if (event.code === "Space") {
@@ -115,24 +116,15 @@ let loop = function() {
     canon.draw();
 
     if (cible.touchCanon()){
-        
+        button.classList.toggle("hidden");
         return;
     }
     
     requestAnimationFrame(loop);
 }
  
-
-let button = document.querySelector(".btn");
 button.addEventListener('click', (e) => {
+    e.target.classList.toggle("hidden");
     cible = new Cible(100,50,900);
     requestAnimationFrame(loop)
 });
-
-// requestAnimationFrame(loop);
-
-
-// ctx.font = "30px Arial";
-// ctx.fillStyle = "black";
-// ctx.textAlign = "center"; 
-// ctx.fillText("Start game",(el.topLeftXPos + el.width/2),(el.topLeftYPos+(el.length+20)/2));
